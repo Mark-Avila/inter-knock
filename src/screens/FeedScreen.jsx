@@ -28,7 +28,6 @@ function FeedScreen() {
         const fetchPosts = async () => {
             const tempPosts = [];
             const waitForSet = debounce(() => {
-                console.log(tempPosts);
                 setPosts(tempPosts);
             }, 250);
 
@@ -57,10 +56,6 @@ function FeedScreen() {
                         waitForSet();
                     }
                 });
-        };
-
-        const testFuncClearPosts = () => {
-            gun.get("ik-posts").put(null);
         };
 
         // testFuncClearPosts();
