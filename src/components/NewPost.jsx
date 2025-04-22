@@ -31,7 +31,7 @@ function NewPost({ onBackClick }) {
                     const postId = "IK-" + String(timestamp);
                     const encTitle = await SEA.encrypt(title.value, key);
                     const author_id = String(gun.user().is.pub);
-                    const author_name = alias;
+                    const author_name = await SEA.encrypt(alias, key);
                     const encThumbnail = thumbnail.value
                         ? await SEA.encrypt(thumbnail.value, key)
                         : "";

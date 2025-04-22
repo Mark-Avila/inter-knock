@@ -1,9 +1,15 @@
-function PostItem({ title, thumbnail, content, name, created }) {
-    console.log(name)
-    console.log(created)
+import { useNavigate } from "react-router-dom";
+
+function PostItem({ id, title, thumbnail, content, name, created }) {
+    const navigate = useNavigate();
+
+    const handlePostItemClick = () => {
+        navigate('/post/' + id);
+    }
+
     return (
-        <div className="flex flex-col rounded-2xl overflow-hidden border border-white">
-            <div>
+        <div className="flex flex-col rounded-2xl overflow-hidden border border-white hover:cursor-pointer" onClick={handlePostItemClick}>
+            <div> 
                 <img
                     src={thumbnail}
                     className="w-full h-full object-cover"

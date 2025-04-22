@@ -34,6 +34,7 @@ function FeedScreen() {
             gun.get("ik-posts")
                 .map()
                 .once(async (data) => {
+                    console.log(data)
                     if (data) {
                         const key = import.meta.env.VITE_GUNKEY;
                         const title = await SEA.decrypt(data.title, key);
@@ -42,10 +43,12 @@ function FeedScreen() {
                             key
                         );
                         const content = await SEA.decrypt(data.content, key);
-                        const author_name = data.author_name;
+                        const author_name = await SEA.decrypt(data.author_name, key);
                         const created = data.created;
+                        const id = data.id
 
                         tempPosts.push({
+                            id,
                             title,
                             thumbnail,
                             content,
@@ -104,7 +107,8 @@ function FeedScreen() {
                     >
                         <Masonry>
                             {posts.map((item) => (
-                                <PostItem
+                                item.id && <PostItem
+                                    id={item.id}
                                     name={item.author_name}
                                     title={item.title}
                                     content={item.content}
