@@ -154,45 +154,34 @@ function PostScreen() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-900 p-4">
-            <aside className="border h-[calc(100%-32px)] border-white w-64 fixed flex flex-col items-start">
-                <ChatProfile />
-                <button className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2">
-                    Edit Post
-                </button>
-                <button className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2">
-                    Delete Post
-                </button>
-            </aside>
-            <div className="ml-80 mr-12 grid grid-cols-2 overflow-auto h-full gap-8">
+        <div className="grid grid-cols-2 overflow-auto h-full gap-8">
+            <div>
                 <div>
-                    <div>
-                        <div className="flex items-start">
-                            <div className="w-14 h-14 bg-white rounded-full"></div>
-                            <div className="text-white ml-4">
-                                <p>{postData.author_name}</p>
-                                <p>{postData.created}</p>
-                            </div>
+                    <div className="flex items-start">
+                        <div className="w-14 h-14 bg-white rounded-full"></div>
+                        <div className="text-white ml-4">
+                            <p>{postData.author_name}</p>
+                            <p>{postData.created}</p>
                         </div>
                     </div>
-                    <div className="mt-4">
-                        <img src={postData.thumbnail} alt="post-image" />
-                    </div>
                 </div>
-                <div className="bg-black text-white p-4 flex flex-col">
-                    <div className="">
-                        <p className="font-bold text-xl">{postData.title}</p>
-                        <p className="text-white/50 mt-4 max-h-64 overflow-auto">
-                            {postData.content}
-                        </p>
-                    </div>
-                    <CommentList
-                        inputValue={comment.value}
-                        onInputChange={comment.onChange}
-                        onInputSubmit={handleSendComment}
-                        comments={commentsData}
-                    />
+                <div className="mt-4">
+                    <img src={postData.thumbnail} alt="post-image" />
                 </div>
+            </div>
+            <div className="bg-black text-white p-4 flex flex-col">
+                <div className="">
+                    <p className="font-bold text-xl">{postData.title}</p>
+                    <p className="text-white/50 mt-4 max-h-64 overflow-auto">
+                        {postData.content}
+                    </p>
+                </div>
+                <CommentList
+                    inputValue={comment.value}
+                    onInputChange={comment.onChange}
+                    onInputSubmit={handleSendComment}
+                    comments={commentsData}
+                />
             </div>
         </div>
     );

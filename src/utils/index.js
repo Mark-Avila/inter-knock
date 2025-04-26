@@ -6,3 +6,15 @@ export function debounce(func, wait) {
         timeout = setTimeout(() => func.apply(context, args), wait);
     };
 }
+
+export const checkIsValid = (value, field) => {
+    if (!value || value.length === 0) {
+        console.log(field + " is empty");
+        return false;
+    }
+    if (value.length < 2) {
+        console.log(field + " is short");
+        return false;
+    }
+    return true;
+};

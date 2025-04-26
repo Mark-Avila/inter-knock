@@ -34,7 +34,7 @@ function FeedScreen() {
             gun.get("ik-posts")
                 .map()
                 .once(async (data) => {
-                    console.log(data)
+                    console.log(data);
                     if (data) {
                         const key = import.meta.env.VITE_GUNKEY;
                         const title = await SEA.decrypt(data.title, key);
@@ -43,9 +43,12 @@ function FeedScreen() {
                             key
                         );
                         const content = await SEA.decrypt(data.content, key);
-                        const author_name = await SEA.decrypt(data.author_name, key);
+                        const author_name = await SEA.decrypt(
+                            data.author_name,
+                            key
+                        );
                         const created = data.created;
-                        const id = data.id
+                        const id = data.id;
 
                         tempPosts.push({
                             id,
@@ -71,56 +74,30 @@ function FeedScreen() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-900 p-4">
-            <aside className="border h-[calc(100%-32px)] border-white w-64 fixed flex flex-col items-start">
-                <ChatProfile />
-                <button
-                    className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2"
-                    onClick={handleNewPost}
-                >
-                    New Post
-                </button>
-                <button className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2">
-                    Popular
-                </button>
-                <button className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2">
-                    Newest
-                </button>
-                <button className="text-white mt-8 hover:bg-green-500 border-2 border-green-500 p-2">
-                    Random
-                </button>
-                <button className="text-white border-2 border-red-500 hover:bg-red-500 p-2 mt-auto">
-                    Logout
-                </button>
-            </aside>
-            <div className="ml-80 mr-12 overflow-auto h-full">
-                {isNewPostScreen ? (
-                    <NewPost onBackClick={handleNewPost} />
-                ) : (
-                    <ResponsiveMasonry
-                        columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
-                        gutterBreakpoints={{
-                            350: "12px",
-                            750: "16px",
-                            900: "24px",
-                        }}
-                    >
-                        <Masonry>
-                            {posts.map((item) => (
-                                item.id && <PostItem
-                                    id={item.id}
-                                    name={item.author_name}
-                                    title={item.title}
-                                    content={item.content}
-                                    thumbnail={item.thumbnail}
-                                    created={item.created}
-                                />
-                            ))}
-                        </Masonry>
-                    </ResponsiveMasonry>
+        <ResponsiveMasonry
+            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+            gutterBreakpoints={{
+                350: "12px",
+                750: "16px",
+                900: "24px",
+            }}
+        >
+            <Masonry>
+                {posts.map(
+                    (item) =>
+                        item.id && (
+                            <PostItem
+                                id={item.id}
+                                name={item.author_name}
+                                title={item.title}
+                                content={item.content}
+                                thumbnail={item.thumbnail}
+                                created={item.created}
+                            />
+                        )
                 )}
-            </div>
-        </div>
+            </Masonry>
+        </ResponsiveMasonry>
     );
 }
 

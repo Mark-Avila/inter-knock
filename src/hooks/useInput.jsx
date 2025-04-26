@@ -11,10 +11,15 @@ function useInput(initialValue = '') {
     setValue(initialValue);
   };
 
+  const setNewValue = (newValue) => {
+    setValue(newValue);
+  }
+
   return {
     value,
     onChange,
     reset,
+    setNewValue
   };
 }
 
