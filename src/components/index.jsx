@@ -8,6 +8,7 @@ import AuthInput from "./AuthInput";
 import BackButton from "./BackButton";
 import ZenInput from "./ZenInput";
 import NavButton from "./NavButton";
+import FairyNotification from "./FairyNotification";
 
 export {
     LoginForm,
@@ -19,5 +20,6 @@ export {
     AuthInput,
     BackButton,
     ZenInput,
-    NavButton
+    NavButton,
+    FairyNotification
 }
