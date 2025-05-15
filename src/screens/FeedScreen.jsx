@@ -5,10 +5,11 @@ import { ChatProfile, NewPost, PostItem } from "../components";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { SEA } from "gun";
 import { debounce } from "../utils";
+import CircleLoader from "../components/CircleLoader";
 
 function FeedScreen() {
     const [alias, setAlias] = useState("");
-    const [isNewPostScreen, setIsNewPostScreen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
 
@@ -29,12 +30,12 @@ function FeedScreen() {
             const tempPosts = [];
             const waitForSet = debounce(() => {
                 setPosts(tempPosts);
+                setIsLoading(false);
             }, 250);
 
             gun.get("ik-posts")
                 .map()
                 .once(async (data) => {
-                    console.log(data);
                     if (data) {
                         const key = import.meta.env.VITE_GUNKEY;
                         const title = await SEA.decrypt(data.title, key);
@@ -61,7 +62,7 @@ function FeedScreen() {
 
                         waitForSet();
                     }
-                });
+                })
         };
 
         // testFuncClearPosts();
@@ -69,13 +70,17 @@ function FeedScreen() {
         checkUser();
     }, []);
 
-    const handleNewPost = () => {
-        setIsNewPostScreen((prev) => !prev);
-    };
+    if (isLoading) {
+        return (
+            <div className="min-h-96 flex items-center justify-center">
+                <CircleLoader />
+            </div>
+        )
+    }
 
     return (
         <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
+            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 4 }}
             gutterBreakpoints={{
                 350: "12px",
                 750: "16px",

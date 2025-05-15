@@ -1,11 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { ChatProfile, CommentItem } from "../components";
+import { BackButton, ChatProfile, CommentItem } from "../components";
 import { useEffect, useState } from "react";
 import gun from "../gun";
 import { debounce } from "../utils";
 import { SEA } from "gun";
 import CommentList from "../components/CommentList";
 import { useInput } from "../hooks";
+import DiscussImage from "../assets/ik-discuss.webp";
+import CircleLoader from "../components/CircleLoader";
 
 function PostScreen() {
     const { id } = useParams();
@@ -13,6 +15,7 @@ function PostScreen() {
 
     const [postData, setPostData] = useState(null);
     const [commentsData, setCommentsData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const comment = useInput("");
 
     useEffect(() => {
@@ -32,8 +35,8 @@ function PostScreen() {
             const waitForSetPost = debounce(() => {
                 if (tempData) {
                     setPostData(tempData);
+                    setIsLoading(false);
                 } else {
-                    console.log("Post not found");
                     navigate("/feed");
                 }
             }, 500);
@@ -108,7 +111,7 @@ function PostScreen() {
                             created,
                         };
 
-                        tempData.push(newData)
+                        tempData.push(newData);
                     }
                     waitForSetComments();
                 });
@@ -139,49 +142,70 @@ function PostScreen() {
                     created: timestamp,
                 };
 
-                gun.get('ik-comments').get(id).get(commentId).put(data);
+                gun.get("ik-comments").get(id).get(commentId).put(data);
 
-                console.log("Successfully added comment")
+                console.log("Successfully added comment");
             });
     };
 
-    if (!postData) {
+    const formatDate = (timestamp) => {
+        const date = new Date(timestamp);
+        const options = { month: "short", day: "2-digit", year: "numeric" };
+        return date.toLocaleDateString("en-US", options).replace(",", "");
+    };
+
+    if (isLoading) {
         return (
-            <div className="min-h-screen bg-zinc-900 p-4">
-                <p className="text-white">Loading</p>
+            <div className="min-h-96 flex items-center justify-center">
+                <CircleLoader />
             </div>
-        );
+        )
     }
 
     return (
-        <div className="grid grid-cols-2 overflow-auto h-full gap-8">
-            <div>
-                <div>
-                    <div className="flex items-start">
-                        <div className="w-14 h-14 bg-white rounded-full"></div>
-                        <div className="text-white ml-4">
-                            <p>{postData.author_name}</p>
-                            <p>{postData.created}</p>
+        <div className="flex flex-col">
+            <BackButton goHome/>
+            <div className="grid h-full mt-8 grid-cols-12 gap-8 overflow-auto">
+                <div className="col-span-5">
+                    <div>
+                        <div className="flex items-start">
+                            <div className="h-14 w-14 rounded-full bg-white"></div>
+                            <div className="font-montserrat ml-4 font-bold">
+                                <p className="text-white">
+                                    {postData.author_name}
+                                </p>
+                                <p className="mt-1 text-xs text-white/40">
+                                    {formatDate(postData.created)}
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    <div className="mt-4 overflow-hidden rounded-lg border-3 border-zinc-600">
+                        <img
+                            src={
+                                postData.thumbnail
+                                    ? postData.thumbnail
+                                    : DiscussImage
+                            }
+                            alt="post-image"
+                            className="h-auto w-full"
+                        />
+                    </div>
                 </div>
-                <div className="mt-4">
-                    <img src={postData.thumbnail} alt="post-image" />
+                <div className="font-montserrat col-span-7 flex flex-col bg-black p-4 text-white">
+                    <div>
+                        <p className="text-xl font-bold">{postData.title}</p>
+                        <p className="mt-4 max-h-64 overflow-auto text-sm font-bold text-white/50">
+                            {postData.content}
+                        </p>
+                    </div>
+                    <CommentList
+                        inputValue={comment.value}
+                        onInputChange={comment.onChange}
+                        onInputSubmit={handleSendComment}
+                        comments={commentsData}
+                    />
                 </div>
-            </div>
-            <div className="bg-black text-white p-4 flex flex-col">
-                <div className="">
-                    <p className="font-bold text-xl">{postData.title}</p>
-                    <p className="text-white/50 mt-4 max-h-64 overflow-auto">
-                        {postData.content}
-                    </p>
-                </div>
-                <CommentList
-                    inputValue={comment.value}
-                    onInputChange={comment.onChange}
-                    onInputSubmit={handleSendComment}
-                    comments={commentsData}
-                />
             </div>
         </div>
     );

@@ -1,13 +1,38 @@
+import { useEffect, useState } from "react";
+import gun from "../gun";
+import { FaRegClipboard } from "react-icons/fa6";
+import { truncateString } from "../utils";
+
 function ChatProfile() {
-    return ( 
-        <div className="flex gap-2 border border-white w-fit p-2 pr-8 rounded-full">
-            <div className="w-12 h-12 bg-white rounded-full"></div>
-            <div className="flex flex-col justify-evenly h-full">
-                <p className="text-white">big_muncher</p>
-                <p className="text-white text-sm">#123AB</p>
+    const [userAlias, setUserAlias] = useState("");
+    const [userId, setUserId] = useState("");
+
+    useEffect(() => {
+        const fetchAlias = () => {
+            const user = gun.user();
+            user.get("alias").once(async (alias) => {
+                setUserAlias(alias);
+                setUserId(user.is.pub);
+            });
+        };
+
+        fetchAlias();
+    }, []);
+
+    return (
+        <div className="flex w-full gap-2 rounded-full border-3 border-black p-2 pr-8 bg-gradient-to-b from-zinc-800 to-zinc-900">
+            <div className="h-12 w-12 rounded-full bg-white border-3 border-black"></div>
+            <div className="flex h-full flex-col justify-evenly font-montserrat font-bold">
+                <p className="text-white">{truncateString(userAlias, 50)}</p>
+                <div className="text-white/50">
+                    <button className="flex items-center gap-2 hover:cursor-pointer">
+                        <FaRegClipboard />
+                        <p className="text-xs">#{truncateString(userId, 5)}</p>
+                    </button>
+                </div>
             </div>
         </div>
-     );
+    );
 }
 
 export default ChatProfile;

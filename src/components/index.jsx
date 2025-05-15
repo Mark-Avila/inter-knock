@@ -4,6 +4,10 @@ import ChatProfile from "./ChatProfile";
 import PostItem from "./PostItem";
 import NewPost from "./NewPost";
 import CommentItem from "./CommentItem";
+import AuthInput from "./AuthInput";
+import BackButton from "./BackButton";
+import ZenInput from "./ZenInput";
+import NavButton from "./NavButton";
 
 export {
     LoginForm,
@@ -11,5 +15,9 @@ export {
     ChatProfile,
     PostItem,
     NewPost,
-    CommentItem
+    CommentItem,
+    AuthInput,
+    BackButton,
+    ZenInput,
+    NavButton
 }

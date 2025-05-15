@@ -18,7 +18,7 @@ function AuthScreen() {
     const toggleAuthMode = () => setIsLogin(prev => !prev);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-950 font-montserrat font-bold">
             {isLogin ? (
                 <LoginForm onGoToRegister={toggleAuthMode} />
             ) : (
