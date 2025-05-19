@@ -6,7 +6,7 @@ export const FairyContext = createContext();
 export function FairyProvider({ children }) {
     const [notifications, setNotifications] = useState([]);
 
-    const addNotification = (message, type = 'info', duration = 2000) => {
+    const addNotification = (message, type = 'info', duration = 1000) => {
         const id = Date.now();
         setNotifications((prev) => [...prev, { id, message, type }]);
         setTimeout(() => {

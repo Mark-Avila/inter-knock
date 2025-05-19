@@ -1,41 +1,47 @@
 import gun from "../gun";
-import { useInput } from "../hooks";
+import { useFairy, useInput } from "../hooks";
 import globalIcon from "../assets/ik-globe.png";
 import AuthInput from "./AuthInput";
 import { FaCircleCheck, FaRegCircleCheck } from "react-icons/fa6";
+import { useState } from "react";
+import ZenButton from "./ZenButton";
 
 function RegisterForm({ onGoToLogin }) {
+    const { addNotification } = useFairy();
+    const [isLoading, setIsLoading] = useState(false);
     const username = useInput("");
     const pwd1 = useInput("");
     const pwd2 = useInput("");
 
     const handleRegister = () => {
         if (!username.value) {
-            console.log("Username is empty, master");
+            addNotification("Username is empty, master");
             return;
         }
 
         if (!pwd1.value || !pwd2.value) {
-            console.log("A password field is empty, master");
+            addNotification("A password field is empty, master");
             return;
         }
 
         if (pwd1.value !== pwd2.value) {
-            console.log("Passwords don't match, master");
+            addNotification("Passwords don't match, master");
             return;
         }
 
         const user = gun.user();
 
+        setIsLoading(true);
+
         user.create(username.value, pwd1.value, ({ err }) => {
             if (!err) {
-                console.log("Successfully registered! Please login, master");
-
+                addNotification("Successfully registered! Please login, master");
                 onGoToLogin();
             } else {
-                console.log("An error occured while registering, master");
+                addNotification("An error occured while registering, master");
                 console.error(err);
             }
+            setIsLoading(false)
         });
     };
 
@@ -59,6 +65,7 @@ function RegisterForm({ onGoToLogin }) {
                         label="Username"
                         type="text"
                         placeholder="Username"
+                        disabled={isLoading}
                     />
                     <AuthInput
                         onChange={pwd1.onChange}
@@ -66,6 +73,7 @@ function RegisterForm({ onGoToLogin }) {
                         label="Password"
                         type="password"
                         placeholder="Password"
+                        disabled={isLoading}
                     />
                     <AuthInput
                         onChange={pwd2.onChange}
@@ -73,25 +81,17 @@ function RegisterForm({ onGoToLogin }) {
                         label="Confirm Password"
                         type="password"
                         placeholder="Confirm Password"
+                        disabled={isLoading}
                     />
                     <div className="flex justify-center mt-4">
-                        <button
-                            className="group bg-linear-to-t hover:cursor-pointer from-zinc-950 to-zinc-900 text-white border border-zinc-800 flex items-center justify-between px-2 gap-2 h-10 w-32 rounded-full"
-                            onClick={handleRegister}
-                        >
-                            <FaCircleCheck className="text-green-500 group-hover:block hidden" />
-                            <FaRegCircleCheck className="text-green-500 group-hover:hidden block" />
-                            <span className="group-hover:text-white text-white/70 transition ease-in-out text-sm">
-                                Register
-                            </span>
-                            <span></span>
-                        </button>
+                        <ZenButton label="Register" isLoading={isLoading} onClick={handleRegister}/>
                     </div>
-                    <div className="flex justify-end mt-4">
-                        <p className="text-white text-xs">Already have an Account?</p>
+                    <div className="flex justify-end">
+                        <p className={`text-xs ${isLoading ? 'text-white/30' : 'text-white'}`}>Already have an Account?</p>
                         <button
                             onClick={onGoToLogin}
-                            className="ml-1 text-xs text-white hover:text-green-500 hover:cursor-pointer transition ease-in-out"
+                            className={`ml-1 text-xs ${isLoading ? 'text-white/30 hover:text-white/30' : 'text-white hover:text-green-500 hover:cursor-pointer'} transition ease-in-out`}
+                            disabled={isLoading}
                         >
                             Login
                         </button>

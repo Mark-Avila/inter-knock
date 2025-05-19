@@ -13,12 +13,10 @@ function PostItem({ id, title, thumbnail, content, name, created }) {
 
     const handleImageLoad = () => {
         setIsLoading(false);
-        console.log(1)
     };
 
     const handleImageError = () => {
         setImgSrc(DiscussImage);
-        console.log(1)
         setIsLoading(false);
     };
 
@@ -35,7 +33,7 @@ function PostItem({ id, title, thumbnail, content, name, created }) {
         >
             <div className="relative flex flex-col">
                 {isLoading && (
-                    <div className="flex flex-col gap-4 items-center justify-center h-full w-full">
+                    <div className="flex min-h-64 flex-col gap-4 items-center justify-center h-full w-full">
                         <div className="h-4 w-4 animate-spin rounded-full border-4 border-white border-t-transparent" />
                         <p className="text-white font-bold animate-pulse">Loading</p>
                     </div>
@@ -44,7 +42,7 @@ function PostItem({ id, title, thumbnail, content, name, created }) {
                     src={imgSrc ? imgSrc : DiscussImage}
                     onLoad={handleImageLoad}
                     onError={handleImageError}
-                    className={`h-full w-full object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                    className={`h-full w-full object-cover ${isLoading ? 'hidden opacity-0' : 'opacity-100'}`}
                     alt="post-thumbnail"
                 />
                 <p className="font-montserrat absolute bottom-0 left-0 z-40 -mr-8 ml-14 w-fit rounded-tr-full bg-zinc-900 pt-1 pr-6 pl-8 text-sm font-bold text-white">
