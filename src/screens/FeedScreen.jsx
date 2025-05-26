@@ -31,38 +31,42 @@ function FeedScreen() {
             const waitForSet = debounce(() => {
                 setPosts(tempPosts);
                 setIsLoading(false);
+                console.log(tempPosts)
             }, 250);
 
             gun.get("ik-posts")
                 .map()
                 .once(async (data) => {
+                    console.log(data)
                     if (data) {
                         const key = import.meta.env.VITE_GUNKEY;
                         const title = await SEA.decrypt(data.title, key);
                         const thumbnail = await SEA.decrypt(
                             data.thumbnail,
-                            key
+                            key,
                         );
                         const content = await SEA.decrypt(data.content, key);
                         const author_name = await SEA.decrypt(
                             data.author_name,
-                            key
+                            key,
                         );
                         const created = data.created;
                         const id = data.id;
+                        const author_id = data.author_id;
 
                         tempPosts.push({
                             id,
                             title,
                             thumbnail,
                             content,
+                            author_id,
                             author_name,
                             created,
                         });
 
                         waitForSet();
                     }
-                })
+                });
         };
 
         // testFuncClearPosts();
@@ -72,10 +76,10 @@ function FeedScreen() {
 
     if (isLoading) {
         return (
-            <div className="min-h-96 flex items-center justify-center">
+            <div className="flex min-h-96 items-center justify-center">
                 <CircleLoader />
             </div>
-        )
+        );
     }
 
     return (
@@ -86,6 +90,7 @@ function FeedScreen() {
                 750: "16px",
                 900: "24px",
             }}
+            className="min-h-full"
         >
             <Masonry>
                 {posts.map(
@@ -98,8 +103,9 @@ function FeedScreen() {
                                 content={item.content}
                                 thumbnail={item.thumbnail}
                                 created={item.created}
+                            author_id={item.author_id}
                             />
-                        )
+                        ),
                 )}
             </Masonry>
         </ResponsiveMasonry>

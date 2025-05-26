@@ -2,20 +2,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BackButton, ChatProfile, CommentItem } from "../components";
 import { useEffect, useState } from "react";
 import gun from "../gun";
-import { debounce } from "../utils";
+import { debounce, truncateString } from "../utils";
 import { SEA } from "gun";
 import CommentList from "../components/CommentList";
-import { useInput } from "../hooks";
+import { useFairy, useInput } from "../hooks";
 import DiscussImage from "../assets/ik-discuss.webp";
 import CircleLoader from "../components/CircleLoader";
+import { motion } from "motion/react";
+import { FaPencil } from "react-icons/fa6";
 
 function PostScreen() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addNotification } = useFairy();
 
     const [postData, setPostData] = useState(null);
     const [commentsData, setCommentsData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isAuthor, setIsAuthor] = useState(false);
     const comment = useInput("");
 
     useEffect(() => {
@@ -35,6 +39,13 @@ function PostScreen() {
             const waitForSetPost = debounce(() => {
                 if (tempData) {
                     setPostData(tempData);
+
+                    const user = gun.user();
+
+                    if (tempData.author_id === user.is.pub) {
+                        setIsAuthor(true);
+                    }
+
                     setIsLoading(false);
                 } else {
                     navigate("/feed");
@@ -85,7 +96,7 @@ function PostScreen() {
                 if (tempData) {
                     setCommentsData(tempData);
                 } else {
-                    console.log("Post not found");
+                    addNotification("Post not found");
                     navigate("/feed");
                 }
             }, 500);
@@ -144,7 +155,7 @@ function PostScreen() {
 
                 gun.get("ik-comments").get(id).get(commentId).put(data);
 
-                console.log("Successfully added comment");
+                addNotification("Successfully added comment");
             });
     };
 
@@ -154,33 +165,98 @@ function PostScreen() {
         return date.toLocaleDateString("en-US", options).replace(",", "");
     };
 
+    const goToEdit = () => {
+        navigate("/edit/" + id);
+    };
+
     if (isLoading) {
         return (
-            <div className="min-h-96 flex items-center justify-center">
+            <div className="flex min-h-96 items-center justify-center">
                 <CircleLoader />
             </div>
-        )
+        );
     }
 
+    const fadeFromLeftVariants = {
+        hidden: {
+            x: -50,
+            opacity: 0,
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                type: "spring",
+            },
+        },
+    };
+
+    const fadeFromRightVariants = {
+        hidden: {
+            x: 50,
+            opacity: 0,
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.25,
+                type: "spring",
+            },
+        },
+    };
+
+    const profileSrc =
+        "https://api.dicebear.com/9.x/dylan/svg?seed=" +
+        truncateString(postData.author_id, 5);
+
     return (
-        <div className="flex flex-col">
-            <BackButton goHome/>
-            <div className="grid h-full mt-8 grid-cols-12 gap-8 overflow-auto">
-                <div className="col-span-5">
-                    <div>
-                        <div className="flex items-start">
-                            <div className="h-14 w-14 rounded-full bg-white"></div>
-                            <div className="font-montserrat ml-4 font-bold">
-                                <p className="text-white">
-                                    {postData.author_name}
-                                </p>
-                                <p className="mt-1 text-xs text-white/40">
-                                    {formatDate(postData.created)}
-                                </p>
-                            </div>
-                        </div>
+        <div className="flex flex-col overflow-x-hidden">
+            <div className="flex w-full items-center justify-between">
+                <motion.div
+                    variants={fadeFromLeftVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    <BackButton goHome />
+                </motion.div>
+                {isAuthor && (
+                    <div className="flex items-center">
+                        <button
+                            onClick={goToEdit}
+                            className="font-montserrat flex items-center gap-4 font-bold text-white/50 transition ease-in-out hover:cursor-pointer hover:text-green-500"
+                        >
+                            <FaPencil />
+                            Edit Post
+                        </button>
                     </div>
-                    <div className="mt-4 overflow-hidden rounded-lg border-3 border-zinc-600">
+                )}
+            </div>
+            <div className="mt-8 flex h-full grid-cols-12 gap-8 overflow-x-hidden">
+                <div className="w-2/5">
+                    <motion.div
+                        variants={fadeFromLeftVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="flex items-start"
+                    >
+                        <div className="h-14 w-14 overflow-hidden rounded-full bg-white">
+                            <img src={profileSrc} alt="ik-post-author-pic" />
+                        </div>
+                        <div className="font-montserrat ml-4 font-bold">
+                            <p className="text-white">{postData.author_name}</p>
+                            <p className="mt-1 text-xs text-white/40">
+                                {formatDate(postData.created)}
+                            </p>
+                        </div>
+                    </motion.div>
+                    <motion.div
+                        variants={fadeFromLeftVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="mt-4 overflow-hidden rounded-lg border-3 border-zinc-600"
+                    >
                         <img
                             src={
                                 postData.thumbnail
@@ -190,12 +266,17 @@ function PostScreen() {
                             alt="post-image"
                             className="h-auto w-full"
                         />
-                    </div>
+                    </motion.div>
                 </div>
-                <div className="font-montserrat col-span-7 flex flex-col bg-black p-4 text-white">
+                <motion.div
+                    variants={fadeFromRightVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="font-montserrat justspace flex h-fit w-3/5 flex-col bg-black p-4 text-white"
+                >
                     <div>
                         <p className="text-xl font-bold">{postData.title}</p>
-                        <p className="mt-4 max-h-64 overflow-auto text-sm font-bold text-white/50">
+                        <p className="mt-4 overflow-auto text-sm font-bold whitespace-pre-line text-white/50">
                             {postData.content}
                         </p>
                     </div>
@@ -205,7 +286,7 @@ function PostScreen() {
                         onInputSubmit={handleSendComment}
                         comments={commentsData}
                     />
-                </div>
+                </motion.div>
             </div>
         </div>
     );

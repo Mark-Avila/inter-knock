@@ -2,15 +2,17 @@ import CommentInput from "./CommentInput";
 import CommentItem from "./CommentItem";
 
 function CommentList({ comments, inputValue, onInputChange, onInputSubmit }) {
+
     return (
-        <div className="mt-4 flex h-full flex-col">
-            <div className="flex grow basis-0 flex-col overflow-auto">
+        <div className="mt-4 flex flex-col shrink-0">
+            <div className="flex mb-4 flex-col overflow-auto">
                 {comments &&
                     comments.map((item) => (
                         <CommentItem
                             key={item.id}
                             comment={item.text}
                             name={item.author_name}
+                            author_id={item.author_id}
                         />
                     ))}
             </div>

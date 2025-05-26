@@ -36,7 +36,10 @@ function RegisterForm({ onGoToLogin }) {
         user.create(username.value, pwd1.value, ({ err }) => {
             if (!err) {
                 addNotification("Successfully registered! Please login, master");
-                onGoToLogin();
+                
+                setTimeout(() => {
+                    onGoToLogin();
+                }, 500)
             } else {
                 addNotification("An error occured while registering, master");
                 console.error(err);

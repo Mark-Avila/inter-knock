@@ -1,13 +1,15 @@
 import { SEA } from "gun";
-import { useInput } from "../hooks";
+import { useFairy, useInput } from "../hooks";
 import gun from "../gun";
 import { checkIsValid } from "../utils";
 import DiscussImage from "../assets/ik-discuss.webp";
 import { BackButton, ZenInput } from "../components";
 import { useState, useEffect, useRef } from "react";
 import { FaCircleCheck, FaRegCircleCheck } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 function CreateScreen() {
+    const { addNotification } = useFairy();
     const [currImgLoading, setCurrImgLoading] = useState(false);
 
     const title = useInput("");
@@ -17,6 +19,8 @@ function CreateScreen() {
 
     const [previewSrc, setPreviewSrc] = useState(DiscussImage);
     const debounceRef = useRef();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -81,7 +85,9 @@ function CreateScreen() {
 
                     gun.get("ik-posts").get(postId).put(payload);
 
-                    console.log("Successfully added post");
+                    addNotification("Successfully added post");
+
+                    navigate('/feed');
                 });
         }
     };

@@ -2,7 +2,7 @@ import { FaPaperPlane } from "react-icons/fa";
 
 function CommentInput({ inputValue, onInputChange, onInputSubmit }) {
     return (
-        <div className="flex h-12 gap-4">
+        <div className="flex h-12 gap-4 mt-auto">
             <div className="mt-auto h-full w-full rounded-full border-2 border-zinc-800 bg-zinc-900">
                 <input
                     type="text"

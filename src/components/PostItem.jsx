@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DiscussImage from "../assets/ik-discuss.webp";
+import { motion } from "motion/react";
+import { truncateString } from "../utils";
 
-function PostItem({ id, title, thumbnail, content, name, created }) {
+function PostItem({ id, title, thumbnail, content, name, created, author_id }) {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [imgSrc, setImgSrc] = useState(thumbnail);
@@ -26,8 +28,27 @@ function PostItem({ id, title, thumbnail, content, name, created }) {
         year: "numeric",
     });
 
+    const variants = {
+        hidden: {
+            opacity: 0,
+            y: 25,
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.25
+            }
+        },
+    }
+    
+    const profileSrc = "https://api.dicebear.com/9.x/dylan/svg?seed=" + truncateString(author_id, 5)
+
     return (
-        <div
+        <motion.div
+            variants={variants}
+            initial="hidden"
+            animate="visible"
             className="flex flex-col overflow-hidden rounded-2xl border-3 border-black bg-zinc-800 hover:cursor-pointer"
             onClick={handlePostItemClick}
         >
@@ -50,18 +71,20 @@ function PostItem({ id, title, thumbnail, content, name, created }) {
                 </p>
             </div>
             <div className="ml-4 flex pb-0">
-                <div className="z-50 -mt-8 h-16 w-16 rounded-full border-4 border-zinc-800 bg-white"></div>
+                <div className="z-50 -mt-8 h-16 w-16 rounded-full border-4 border-zinc-800 bg-white overflow-hidden">
+                    <img src={profileSrc} alt="ik-post-profile" />
+                </div>
                 <div className="font-montserrat mt-2 ml-2 font-bold">
                     <p className="text-xs text-white">{postDate}</p>
                 </div>
             </div>
             <div className="font-montserrat mt-4 flex flex-col p-6 pt-0">
                 <p className="font-bold text-white">{title}</p>
-                <p className="mt-2 text-sm font-bold wrap-break-word text-white/60">
-                    {content}
+                <p className="mt-2 text-sm font-bold wrap-break-word text-white/60 whitespace-pre-line">
+                    {content ? truncateString(content, 150) : ""}
                 </p>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

@@ -10,9 +10,10 @@ import {
 import gun from "../gun";
 import { useFairy } from "../hooks";
 import { motion } from "motion/react";
+import { useState } from "react";
 
 function PageLayout() {
-    const { addNotification } = useFairy();
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -32,7 +33,7 @@ function PageLayout() {
     }
 
     return (
-        <div className="bg- min-h-screen overflow-auto bg-[url('./assets/ik-bg-2.jpg')] bg-cover p-4">
+        <div className="min-h-screen overflow-auto bg-[url('./assets/ik-bg-2.jpg')] bg-cover p-4">
             <aside className="fixed flex h-[calc(100%-32px)] w-64 flex-col items-start">
                 <ChatProfile />
                 <motion.div variants={buttonVariants} initial="hidden" animate="visible" className="flex h-full flex-col gap-6">
@@ -43,7 +44,7 @@ function PageLayout() {
                     <LogoutButton handleLogout={handleLogout}/>
                 </motion.div>
             </aside>
-            <div className="mr-12 ml-80 h-full overflow-auto">
+            <div className="mr-12 ml-80 h-[calc(100vh-32px)] overflow-auto">
                 <Outlet />
             </div>
         </div>
