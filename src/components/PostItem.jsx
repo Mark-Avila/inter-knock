@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DiscussImage from "../assets/ik-discuss.webp";
 import { motion } from "motion/react";
@@ -8,6 +8,12 @@ function PostItem({ id, title, thumbnail, content, name, created, author_id }) {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [imgSrc, setImgSrc] = useState(thumbnail);
+
+    useEffect(() => {
+        setImgSrc(thumbnail);
+        setIsLoading(true); // Optional: Reset loading state on new thumbnail
+    }, [thumbnail]);
+
 
     const handlePostItemClick = () => {
         navigate("/post/" + id);

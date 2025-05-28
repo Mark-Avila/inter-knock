@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import gun from "../gun";
 import { useNavigate } from "react-router-dom";
 import { ChatProfile, NewPost, PostItem } from "../components";
@@ -6,11 +6,13 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { SEA } from "gun";
 import { debounce } from "../utils";
 import CircleLoader from "../components/CircleLoader";
+import { FaDice, FaForwardFast, FaPlus } from "react-icons/fa6";
+import { useNav } from "../hooks";
 
 function FeedScreen() {
-    const [alias, setAlias] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [posts, setPosts] = useState([]);
+    const { setNavigation } = useNav();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,11 +20,6 @@ function FeedScreen() {
             const user = gun.user();
             if (!user.is) {
                 navigate("/");
-            } else {
-                // Get the alias from user profile
-                user.get("alias").once((aliasValue) => {
-                    setAlias(aliasValue);
-                });
             }
         };
 
@@ -31,13 +28,12 @@ function FeedScreen() {
             const waitForSet = debounce(() => {
                 setPosts(tempPosts);
                 setIsLoading(false);
-                console.log(tempPosts)
+                console.log(tempPosts);
             }, 250);
 
             gun.get("ik-posts")
                 .map()
                 .once(async (data) => {
-                    console.log(data)
                     if (data) {
                         const key = import.meta.env.VITE_GUNKEY;
                         const title = await SEA.decrypt(data.title, key);
@@ -74,6 +70,37 @@ function FeedScreen() {
         checkUser();
     }, []);
 
+    const sortPosts = (mode) => {
+        // Using current state at the time of call
+        setPosts((prevPosts) => {
+            const current = [...prevPosts];
+
+            let sorted = current;
+
+            if (mode === "oldest") {
+                sorted = current.sort((a, b) => a.created - b.created);
+            } else if (mode === "random") {
+                sorted = current.sort(() => Math.random() - 0.5);
+            } else {
+                sorted = current.sort((a, b) => b.created - a.created);
+            }
+
+            console.log(sorted)
+
+            return sorted
+        });
+    };
+
+    useEffect(() => {
+        setNavigation([
+            { text: "New Post", icon: <FaPlus />, onClick: () => navigate('/create'), highlight: true },
+            { text: "Latest", icon: <FaForwardFast />, onClick: () => sortPosts("latest") },
+            { text: "Oldest", icon: <FaForwardFast />, onClick: () => sortPosts("oldest") },
+            { text: "Random", icon: <FaDice />, onClick: () => sortPosts("random") },
+        ]);
+    }, []);
+
+
     if (isLoading) {
         return (
             <div className="flex min-h-96 items-center justify-center">
@@ -103,7 +130,7 @@ function FeedScreen() {
                                 content={item.content}
                                 thumbnail={item.thumbnail}
                                 created={item.created}
-                            author_id={item.author_id}
+                                author_id={item.author_id}
                             />
                         ),
                 )}
