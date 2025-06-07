@@ -1,12 +1,13 @@
 import { SEA } from "gun";
-import { useFairy, useInput } from "../hooks";
+import { useFairy, useInput, useNav } from "../hooks";
 import gun from "../gun";
 import { checkIsValid } from "../utils";
 import DiscussImage from "../assets/ik-discuss.webp";
 import { BackButton, ZenInput } from "../components";
 import { useState, useEffect, useRef } from "react";
-import { FaCircleCheck, FaRegCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaList, FaRegCircleCheck } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 
 function CreateScreen() {
     const { addNotification } = useFairy();
@@ -21,6 +22,13 @@ function CreateScreen() {
     const debounceRef = useRef();
 
     const navigate = useNavigate();
+    const { setNavigation } = useNav();
+
+    useEffect(() => {
+        setNavigation([
+            { text: "Feed", icon: <FaList />, onClick: () => navigate('/create') },
+        ]);
+    }, []);
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -92,15 +100,47 @@ function CreateScreen() {
         }
     };
 
+    const fadeFromLeftVariants = {
+        hidden: {
+            x: -50,
+            opacity: 0,
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                type: "spring",
+                delay: 0.2
+            },
+        },
+    };
+
+    const fadeFromRightVariants = {
+        hidden: {
+            x: 50,
+            opacity: 0,
+        },
+        visible: {
+            x: 0,
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+                type: "spring",
+                delay: 0.4
+            },
+        },
+    };
+
     return (
         <div
-            className="font-montserrat flex h-fit flex-col"
+            className="font-montserrat flex h-fit flex-col overflow-visible"
             style={{ scrollbarGutter: "stable" }}
         >
             <BackButton goHome/>
             <p className="mt-4 text-2xl font-bold text-white">New Post</p>
-            <div className="grid grid-cols-12 gap-x-8">
-                <div className="col-span-5 mt-4 flex flex-col">
+            <div className="grid grid-cols-12 gap-x-8 overflow-visible">
+                <motion.div variants={fadeFromLeftVariants} initial="hidden" animate="visible" className="col-span-5 mt-4 flex flex-col">
                     <p className="my-2 font-bold text-white">
                         Thumbnail Image URI
                     </p>
@@ -128,8 +168,8 @@ function CreateScreen() {
                             </div>
                         )}
                     </div>
-                </div>
-                <div className="col-span-7 flex flex-col">
+                </motion.div>
+                <motion.div variants={fadeFromRightVariants} initial="hidden" animate="visible" className="col-span-7 flex flex-col">
                     <div className="mt-4 flex flex-col">
                         <p className="my-2 font-bold text-white">Title</p>
                         <ZenInput
@@ -164,7 +204,7 @@ function CreateScreen() {
                             <span></span>
                         </button>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </div>
     );

@@ -51,7 +51,6 @@ function EditScreen() {
             let tempData = null;
             const waitForSetPost = debounce(() => {
                 if (tempData) {
-
                     const user = gun.user();
                     if (tempData.author_id !== user.is.pub) {
                         navigate('/feed');
@@ -137,8 +136,11 @@ function EditScreen() {
             };
 
             gun.get("ik-posts").get(postData.id).put(payload);
-            addNotification("Successfully added post");
-            navigate("/feed");
+            addNotification("Successfully edited post");
+
+            setTimeout(() => {
+                navigate("/feed");
+            }, 250)
         }
     };
 

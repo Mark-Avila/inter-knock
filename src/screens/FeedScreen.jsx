@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import gun from "../gun";
 import { useNavigate } from "react-router-dom";
-import { ChatProfile, NewPost, PostItem } from "../components";
+import { PostItem } from "../components";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { SEA } from "gun";
 import { debounce } from "../utils";
@@ -29,7 +29,7 @@ function FeedScreen() {
                 setPosts(tempPosts);
                 setIsLoading(false);
                 console.log(tempPosts);
-            }, 250);
+            }, 200);
 
             gun.get("ik-posts")
                 .map()
@@ -117,7 +117,7 @@ function FeedScreen() {
                 750: "16px",
                 900: "24px",
             }}
-            className="min-h-full"
+            className="overflow-hidden"
         >
             <Masonry>
                 {posts.map(

@@ -5,11 +5,11 @@ import gun from "../gun";
 import { debounce, truncateString } from "../utils";
 import { SEA } from "gun";
 import CommentList from "../components/CommentList";
-import { useFairy, useInput } from "../hooks";
+import { useFairy, useInput, useNav } from "../hooks";
 import DiscussImage from "../assets/ik-discuss.webp";
 import CircleLoader from "../components/CircleLoader";
 import { motion } from "motion/react";
-import { FaPencil } from "react-icons/fa6";
+import { FaList, FaPencil } from "react-icons/fa6";
 
 function PostScreen() {
     const { id } = useParams();
@@ -21,6 +21,7 @@ function PostScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthor, setIsAuthor] = useState(false);
     const comment = useInput("");
+    const { setNavigation } = useNav();
 
     useEffect(() => {
         const checkUser = () => {
@@ -31,6 +32,12 @@ function PostScreen() {
         };
 
         checkUser();
+    }, []);
+
+    useEffect(() => {
+        setNavigation([
+            { text: "Feed", icon: <FaList />, onClick: () => navigate('/feed') },
+        ]);
     }, []);
 
     useEffect(() => {
@@ -222,13 +229,16 @@ function PostScreen() {
                     <BackButton goHome />
                 </motion.div>
                 {isAuthor && (
-                    <div className="flex items-center">
+                    <div className="mt-10 flex justify-end rounded-md font-bold">
                         <button
                             onClick={goToEdit}
-                            className="font-montserrat flex items-center gap-4 font-bold text-white/50 transition ease-in-out hover:cursor-pointer hover:text-green-500"
+                            className="group font-montserrat flex h-10 w-fit items-center gap-4 rounded-full border border-zinc-800 bg-linear-to-t from-zinc-950 to-zinc-900 px-4 text-white hover:cursor-pointer"
                         >
-                            <FaPencil />
-                            Edit Post
+                            <FaPencil className="text-green-500/50 group-hover:text-green-500" />
+                            <span className="text-sm text-white/70 transition ease-in-out group-hover:text-white">
+                                Edit Post
+                            </span>
+                            <span></span>
                         </button>
                     </div>
                 )}
@@ -246,8 +256,8 @@ function PostScreen() {
                         </div>
                         <div className="font-montserrat ml-4 font-bold">
                             <p className="text-white">{postData.author_name}</p>
-                            <p className="mt-1 text-xs text-white/40">
-                                {formatDate(postData.created)}
+                            <p className="mt-1 text-sm text-white/40">
+                                Posted on {formatDate(postData.created)}
                             </p>
                         </div>
                     </motion.div>

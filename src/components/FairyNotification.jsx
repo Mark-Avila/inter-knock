@@ -1,4 +1,5 @@
 import { motion, scale, AnimatePresence } from "motion/react";
+import ikFairy from "../assets/ik-fairy.png"
 
 function FairyNotification({ notifications }) {
     const textBoxVariants = {
@@ -51,7 +52,7 @@ function FairyNotification({ notifications }) {
                             className="z-40 h-14 w-14 overflow-hidden rounded-full"
                         >
                             <img
-                                src="src/assets/ik-fairy.png"
+                                src={ikFairy}
                                 className="h-full w-full object-cover shadow-lg"
                                 alt="fairy-zzz"
                             />

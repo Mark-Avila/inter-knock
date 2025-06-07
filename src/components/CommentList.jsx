@@ -13,6 +13,7 @@ function CommentList({ comments, inputValue, onInputChange, onInputSubmit }) {
                             comment={item.text}
                             name={item.author_name}
                             author_id={item.author_id}
+                            created={item.created}
                         />
                     ))}
             </div>

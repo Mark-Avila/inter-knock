@@ -1,12 +1,50 @@
-# React + Vite
+# Inter Knock
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Decentralized P2P Social Media App using [GUN](https://github.com/amark/gun). Experimental project to try what’s possible with decentralized databases
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication**
+![Inter-knock Sample Image 2](src/assets/readme/ik-img-2.jpg)
 
-## Expanding the ESLint configuration
+- **CRUD functionality for Posts** 
+![Inter-knock Sample Image 1](src/assets/readme/ik-img-1.jpg)
+![Inter-knock Sample Image 3](src/assets/readme/ik-img-3.jpg?v=1)
+![Inter-knock Sample Image 3](src/assets/readme/ik-img-4.jpg)
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Usage
+
+A little ironic, but relay server is needed for reliable syncing with peers.
+
+1. Create a new directory eg. `inter-knock-relay` or what you prefer
+2. Install the following dependencies
+```bash
+npm i gun express cors
+```
+3. Create a new file eg. `server.js` and paste the following code 
+```javascript
+
+const Gun = require('gun');
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const cors = require('cors')
+
+app.use(express.static(__dirname));
+app.use(cors());
+
+const gun = Gun({
+  web: http,
+  file: 'data', // directory to store data, optional
+  peers: []     // you can specify peer URLs here to connect to other relays
+});
+
+// Start the server
+const PORT = process.env.PORT || 8765;
+http.listen(PORT, () => {
+  console.log(`GUN relay server running on http://localhost:${PORT}/gun`);
+});
+```
+4. Run the server 
+

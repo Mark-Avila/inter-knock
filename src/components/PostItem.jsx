@@ -43,7 +43,8 @@ function PostItem({ id, title, thumbnail, content, name, created, author_id }) {
             opacity: 1,
             y: 0,
             transition: {
-                duration: 0.25
+                duration: 0.5,
+                
             }
         },
     }
@@ -51,14 +52,11 @@ function PostItem({ id, title, thumbnail, content, name, created, author_id }) {
     const profileSrc = "https://api.dicebear.com/9.x/dylan/svg?seed=" + truncateString(author_id, 5)
 
     return (
-        <motion.div
-            variants={variants}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col overflow-hidden rounded-2xl border-3 border-black bg-zinc-800 hover:cursor-pointer"
+        <div
+            className="flex flex-col overflow-hidden rounded-2xl border-3 border-black bg-zinc-800 hover:bg-zinc-900 transition ease-in group hover:cursor-pointer"
             onClick={handlePostItemClick}
         >
-            <div className="relative flex flex-col">
+            <div className="relative flex flex-col group-hover:brightness-75 transition ease-in">
                 {isLoading && (
                     <div className="flex min-h-64 flex-col gap-4 items-center justify-center h-full w-full">
                         <div className="h-4 w-4 animate-spin rounded-full border-4 border-white border-t-transparent" />
@@ -90,7 +88,7 @@ function PostItem({ id, title, thumbnail, content, name, created, author_id }) {
                     {content ? truncateString(content, 150) : ""}
                 </p>
             </div>
-        </motion.div>
+        </div>
     );
 }
 

@@ -12,7 +12,7 @@ function LogoutButton({ handleLogout }) {
             opacity: 1,
             x: 0,
             transition: {
-                delay: 1.1,
+                delay: 1.3,
                 duration: 0.8,
                 type: "spring"
             },

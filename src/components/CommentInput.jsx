@@ -1,4 +1,5 @@
-import { FaPaperPlane } from "react-icons/fa";
+import { FaAlignRight, FaPaperPlane } from "react-icons/fa";
+import { FaAngleRight } from "react-icons/fa6";
 
 function CommentInput({ inputValue, onInputChange, onInputSubmit }) {
     return (
@@ -15,9 +16,13 @@ function CommentInput({ inputValue, onInputChange, onInputSubmit }) {
             </div>
             <button
                 onClick={onInputSubmit}
-                className="text-white hover:text-green-500 text-2xl px-4 hover:cursor-pointer active:text-green-800"
+                className="group font-montserrat flex h-full w-fit items-center gap-4 rounded-full border border-zinc-800 bg-linear-to-t from-zinc-950 to-zinc-900 px-4 text-white hover:cursor-pointer"
             >
-                <FaPaperPlane />
+                <FaAngleRight className="text-green-500/50 group-hover:text-green-500" />
+                <span className="text-sm font-bold text-white/70 transition ease-in-out group-hover:text-white">
+                    Comment
+                </span>
+                <span></span>
             </button>
         </div>
     );

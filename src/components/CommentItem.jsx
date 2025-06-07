@@ -1,8 +1,14 @@
 import { truncateString } from "../utils";
 
-function CommentItem({ name, comment, author_id }) {
+function CommentItem({ name, comment, created, author_id }) {
 
-    const profileSrc = "https://api.dicebear.com/9.x/dylan/svg?seed=" + truncateString(author_id, 5)
+    const profileSrc = "https://api.dicebear.com/9.x/dylan/svg?seed=" + truncateString(author_id, 5);
+
+    const commentDate = new Date(created).toLocaleString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+    });
 
     return (
         <div className="flex items-start font-montserrat font-bold border-b-2 border-white/10 pb-4 mt-4 last:border-none">
@@ -10,7 +16,10 @@ function CommentItem({ name, comment, author_id }) {
                 <img src={profileSrc} alt="sk-comment-profile-pic" />
             </div>
             <div className="flex flex-col">
-                <p>{name ? name : '...'}</p>
+                <div className="flex items-center gap-2">
+                    <p>{name ? name : '...'}</p>
+                    <p className="text-xs text-white/30">{commentDate}</p>
+                </div>
                 <p className="mt-1 text-white/50 text-sm">
                     {comment ? comment : '....'}
                 </p>
